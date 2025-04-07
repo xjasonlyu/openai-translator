@@ -1,2 +1,3 @@
-# openai-translater
-go-openai-translater
+# OpenAI Translator
+
+go-openai-translator
