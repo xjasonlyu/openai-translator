@@ -26,7 +26,8 @@ type TranslationConfig struct {
 	Ctx                 context.Context
 	Url                 string
 	Debug               bool
-	Model               string // GPT3Dot5Turbo0301,GPT3Dot5Turbo
+	Model               string
+	SystemPrompt        string
 	MaxTokens           int
 	Temperature         float32 // 0-2, 越高越随机
 	TopP                float32 // 0-1,0.1表示仅考虑包含最高前10%概率质量的令牌,推荐1.0
@@ -97,14 +98,23 @@ func WithModel(Model string) Option {
 	}
 }
 
+func WithSystemPrompt(prompt string) Option {
+	return func(tc *TranslationConfig) {
+		tc.SystemPrompt = prompt
+	}
+}
+
 const (
 	DefaultMaxTokens        = 1000
 	DefaultTemperature      = 0.0
 	DefaultTopP             = 1.0
 	DefaultPresencePenalty  = 1.0
 	DefaultFrequencyPenalty = 1.0
-	GPT3Dot5Turbo0301       = openai.GPT3Dot5Turbo0301
-	GPT3Dot5Turbo           = openai.GPT3Dot5Turbo
+)
+
+const (
+	defaultSystemPrompt = `You are a professional translator that can only translate the input text and cannot interpret it.
+Do not add any explanations or notes and only output the translation.`
 )
 
 func (cfg *TranslationConfig) correct() {
@@ -112,7 +122,10 @@ func (cfg *TranslationConfig) correct() {
 		cfg.Ctx = context.Background()
 	}
 	if cfg.Model == "" {
-		cfg.Model = GPT3Dot5Turbo
+		cfg.Model = openai.GPT4
+	}
+	if cfg.SystemPrompt == "" {
+		cfg.SystemPrompt = defaultSystemPrompt
 	}
 	if cfg.MaxTokens < 0 || cfg.MaxTokens > 4096 {
 		cfg.MaxTokens = DefaultMaxTokens

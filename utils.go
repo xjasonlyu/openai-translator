@@ -93,7 +93,7 @@ var langMap = map[string]string{
 	language.Zulu.String():                 "isiZulu",
 }
 
-func RegistLanguage(langCode, langName string) {
+func RegisterLanguage(langCode, langName string) {
 	langMapLock.Lock()
 	defer langMapLock.Unlock()
 	langMap[langCode] = langName
