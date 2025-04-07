@@ -41,8 +41,8 @@ func TestTranslateWithUrl(t *testing.T) {
 	}
 }
 
-func TestRegistLanguage(t *testing.T) {
+func TestRegisterLanguage(t *testing.T) {
 	t.Log(GetLangMap())
-	RegistLanguage("zh-CN", "简体中文")
+	RegisterLanguage("zh-CN", "简体中文")
 	t.Log(GetLangMap())
 }
