@@ -1,3 +1,3 @@
 # OpenAI Translator
 
-go-openai-translator
+This repo was originally forked from: <https://github.com/zijiren233/openai-translator>.
