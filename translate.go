@@ -3,7 +3,6 @@ package openaitranslator
 import (
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/sashabaranov/go-openai"
 )
@@ -46,17 +45,9 @@ func generateChat(text, To string, params *TranslationConfig) []openai.ChatCompl
 	var assistantPrompt string
 	To = getBaseLangCode(To)
 	if name := getLangName(params.From); name == "" || name == "auto" {
-		if To == "wyw" || To == "yue" || To == "zh" || strings.HasPrefix(To, "zh-") {
-			assistantPrompt = fmt.Sprintf("请把接下来的内容翻译成%s", getLangName(To))
-		} else {
-			assistantPrompt = fmt.Sprintf("Translate the next content to %s", getLangName(To))
-		}
+		assistantPrompt = fmt.Sprintf("Please translate the following text to %s", getLangName(To))
 	} else {
-		if To == "wyw" || To == "yue" || To == "zh" || strings.HasPrefix(To, "zh-") {
-			assistantPrompt = fmt.Sprintf("请把接下来的内容从%s翻译成%s", name, getLangName(To))
-		} else {
-			assistantPrompt = fmt.Sprintf("Translate the next content from %s to %s", name, getLangName(To))
-		}
+		assistantPrompt = fmt.Sprintf("Please translate the following text from %s to %s", name, getLangName(To))
 	}
 	chat := []openai.ChatCompletionMessage{
 		{Role: "system", Content: params.SystemPrompt},
