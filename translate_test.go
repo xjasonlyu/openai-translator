@@ -33,7 +33,7 @@ func TestTranslateWithUrl(t *testing.T) {
 		{`Oh yeah! I'm a translator!`, "", "de"},
 		{`Oh yeah! I'm a translator!`, "", "fr"},
 	} {
-		result, err := Translate(unit.text, unit.to, os.Getenv("OPENAI_API_KEY"), WithFrom(unit.from), WithUrl("https://api.chatanywhere.com.cn"))
+		result, err := Translate(unit.text, unit.to, os.Getenv("OPENAI_API_KEY"), WithFrom(unit.from), WithUrl(os.Getenv("OPENAI_API_URL")))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -46,3 +46,17 @@ func TestRegisterLanguage(t *testing.T) {
 	RegisterLanguage("zh-CN", "简体中文")
 	t.Log(GetLangMap())
 }
+
+var (
+	_ = WithUrl
+	_ = WithCtx
+	_ = WithDebug
+	_ = WithModel
+	_ = WithFrom
+	_ = WithFrequencyPenalty
+	_ = WithMaxTokens
+	_ = WithSystemPrompt
+	_ = WithTemperature
+	_ = WithPresencePenalty
+	_ = WithTopP
+)
