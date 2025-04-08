@@ -3,6 +3,8 @@ package openaitranslator
 import (
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTranslate(t *testing.T) {
@@ -15,29 +17,16 @@ func TestTranslate(t *testing.T) {
 		{`Oh yeah! I'm a translator!`, "", "de"},
 		{`Oh yeah! I'm a translator!`, "", "fr"},
 	} {
-		result, err := Translate(unit.text, unit.to, os.Getenv("OPENAI_API_KEY"), WithFrom(unit.from), WithDebug())
-		if err != nil {
-			t.Fatal(err)
+		result, err := Translate(
+			unit.text, unit.to,
+			os.Getenv("OPENAI_API_KEY"),
+			WithFrom(unit.from),
+			WithUrl(os.Getenv("OPENAI_API_URL")),
+			WithModel(os.Getenv("OPENAI_MODEL")),
+		)
+		if assert.NoError(t, err) {
+			t.Log(result)
 		}
-		t.Log(result)
-	}
-}
-
-func TestTranslateWithUrl(t *testing.T) {
-	for _, unit := range []struct {
-		text, from, to string
-	}{
-		{`Oh yeah! I'm a translator!`, "", "zh"},
-		{`Oh yeah! I'm a translator!`, "", "wyw"},
-		{`Oh yeah! I'm a translator!`, "", "ja"},
-		{`Oh yeah! I'm a translator!`, "", "de"},
-		{`Oh yeah! I'm a translator!`, "", "fr"},
-	} {
-		result, err := Translate(unit.text, unit.to, os.Getenv("OPENAI_API_KEY"), WithFrom(unit.from), WithUrl(os.Getenv("OPENAI_API_URL")))
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Log(result)
 	}
 }
 

@@ -7,23 +7,19 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-func Translate(text, To, Token string, opt ...Option) (string, error) {
+func Translate(text, to, token string, opts ...Option) (string, error) {
 	cfg := DefaultConfig()
-	for _, v := range opt {
-		v(cfg)
+	for _, opt := range opts {
+		opt(cfg)
 	}
-	return TranslateWithConfig(text, To, Token, cfg)
+	return TranslateWithConfig(text, to, token, cfg)
 }
 
-func TranslateWithConfig(text, To, Token string, cfg *TranslationConfig) (string, error) {
-	url, err := parseOpenaiAPIURLv1(cfg.Url)
-	if err != nil {
-		return "", err
-	}
+func TranslateWithConfig(text, To, token string, cfg *TranslationConfig) (string, error) {
+	openaiConf := openai.DefaultConfig(token)
 	cfg.correct()
-	openaiConf := openai.DefaultConfig(Token)
-	if url != "" {
-		openaiConf.BaseURL = url
+	if cfg.Url != "" {
+		openaiConf.BaseURL = cfg.Url
 	}
 	resp, err := openai.NewClientWithConfig(openaiConf).CreateChatCompletion(cfg.Ctx, openai.ChatCompletionRequest{
 		Model:            cfg.Model,
