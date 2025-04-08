@@ -30,4 +30,6 @@ func LookupLanguage(code string) string {
 
 func init() {
 	RegisterLanguage("wyw", "中文（古文-文言文）")
+	RegisterLanguage("chs", "Simplified Chinese")
+	RegisterLanguage("cht", "Traditional Chinese")
 }
