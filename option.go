@@ -6,62 +6,62 @@ import (
 
 type Option func(*TranslationConfig)
 
-func WithBaseURL(url string) Option {
-	return func(tc *TranslationConfig) {
-		tc.Url = url
+func WithContext(ctx context.Context) Option {
+	return func(config *TranslationConfig) {
+		config.Ctx = ctx
 	}
 }
 
-func WithModel(Model string) Option {
-	return func(tc *TranslationConfig) {
-		tc.Model = Model
+func WithBaseURL(url string) Option {
+	return func(config *TranslationConfig) {
+		config.BaseURL = url
+	}
+}
+
+func WithModel(model string) Option {
+	return func(config *TranslationConfig) {
+		config.Model = model
 	}
 }
 
 func WithSystemPrompt(prompt string) Option {
-	return func(tc *TranslationConfig) {
-		tc.SystemPrompt = prompt
+	return func(config *TranslationConfig) {
+		config.SystemPrompt = prompt
 	}
 }
 
-func WithContext(Ctx context.Context) Option {
-	return func(tc *TranslationConfig) {
-		tc.Ctx = Ctx
+func WithSourceLanguage(source string) Option {
+	return func(config *TranslationConfig) {
+		config.SourceLanguage = source
 	}
 }
 
-func WithFrom(From string) Option {
-	return func(tc *TranslationConfig) {
-		tc.From = From
+func WithMaxTokens(tokens int) Option {
+	return func(config *TranslationConfig) {
+		config.MaxTokens = tokens
 	}
 }
 
-func WithMaxTokens(MaxTokens int) Option {
-	return func(tc *TranslationConfig) {
-		tc.MaxTokens = MaxTokens
+func WithTemperature(v float32) Option {
+	return func(config *TranslationConfig) {
+		config.Temperature = v
 	}
 }
 
-func WithTemperature(Temperature float32) Option {
-	return func(tc *TranslationConfig) {
-		tc.Temperature = Temperature
+func WithTopP(v float32) Option {
+	return func(config *TranslationConfig) {
+		config.TopP = v
 	}
 }
 
-func WithTopP(TopP float32) Option {
-	return func(tc *TranslationConfig) {
-		tc.TopP = TopP
+func WithPresencePenalty(v float32) Option {
+	return func(config *TranslationConfig) {
+		config.PresencePenalty = v
 	}
 }
 
-func WithPresencePenalty(PresencePenalty float32) Option {
-	return func(tc *TranslationConfig) {
-		tc.PresencePenalty = PresencePenalty
-	}
-}
-
-func WithFrequencyPenalty(FrequencyPenalty float32) Option {
-	return func(tc *TranslationConfig) {
-		tc.FrequencyPenalty = FrequencyPenalty
+func WithFrequencyPenalty(v float32) Option {
+	return func(config *TranslationConfig) {
+		config.FrequencyPenalty = v
 	}
 }

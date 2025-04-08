@@ -17,6 +17,7 @@ func TestLookupLanguage(t *testing.T) {
 		{"en-CA", "Canadian English"},
 		{"en-GB", "British English"},
 		{"ja", "Japanese"},
+		{"JPN", "Japanese"},
 		{"zh", "Chinese"},
 		{"zh-Hans", "Simplified Chinese"},
 		{"zh-Hant", "Traditional Chinese"},

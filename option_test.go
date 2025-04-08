@@ -4,7 +4,7 @@ var (
 	_ = WithBaseURL
 	_ = WithContext
 	_ = WithModel
-	_ = WithFrom
+	_ = WithSourceLanguage
 	_ = WithFrequencyPenalty
 	_ = WithMaxTokens
 	_ = WithSystemPrompt
