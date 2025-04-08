@@ -19,6 +19,12 @@ type TranslationConfig struct {
 	FrequencyPenalty float32
 }
 
+func (config *TranslationConfig) Apply(options ...Option) {
+	for _, opt := range options {
+		opt(config)
+	}
+}
+
 const (
 	DefaultModel            = openai.GPT4
 	DefaultMaxTokens        = 1000
@@ -34,30 +40,30 @@ const defaultSystemPrompt = `You are a professional translator. You must follow 
 3. Only output the content of the translation
 4. Translate the input text precisely and faithfully without adding or omitting any content`
 
-func (cfg *TranslationConfig) correct() {
-	if cfg.Ctx == nil {
-		cfg.Ctx = context.Background()
+func (config *TranslationConfig) correct() {
+	if config.Ctx == nil {
+		config.Ctx = context.Background()
 	}
-	if cfg.SystemPrompt == "" {
-		cfg.SystemPrompt = defaultSystemPrompt
+	if config.SystemPrompt == "" {
+		config.SystemPrompt = defaultSystemPrompt
 	}
-	if cfg.Model == "" {
-		cfg.Model = DefaultModel
+	if config.Model == "" {
+		config.Model = DefaultModel
 	}
-	if cfg.MaxTokens < 0 || cfg.MaxTokens > 4096 {
-		cfg.MaxTokens = DefaultMaxTokens
+	if config.MaxTokens < 0 || config.MaxTokens > 4096 {
+		config.MaxTokens = DefaultMaxTokens
 	}
-	if cfg.TopP < 0 || cfg.TopP > 1 {
-		cfg.TopP = DefaultTopP
+	if config.TopP < 0 || config.TopP > 1 {
+		config.TopP = DefaultTopP
 	}
-	if cfg.Temperature < 0 || cfg.Temperature > 2 {
-		cfg.Temperature = DefaultTemperature
+	if config.Temperature < 0 || config.Temperature > 2 {
+		config.Temperature = DefaultTemperature
 	}
-	if cfg.PresencePenalty < -2 || cfg.PresencePenalty > 2 {
-		cfg.PresencePenalty = DefaultPresencePenalty
+	if config.PresencePenalty < -2 || config.PresencePenalty > 2 {
+		config.PresencePenalty = DefaultPresencePenalty
 	}
-	if cfg.FrequencyPenalty < -2 || cfg.FrequencyPenalty > 2 {
-		cfg.FrequencyPenalty = DefaultFrequencyPenalty
+	if config.FrequencyPenalty < -2 || config.FrequencyPenalty > 2 {
+		config.FrequencyPenalty = DefaultFrequencyPenalty
 	}
 }
 

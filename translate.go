@@ -9,9 +9,7 @@ import (
 
 func Translate(text, to, token string, options ...Option) (string, error) {
 	config := DefaultConfig()
-	for _, opt := range options {
-		opt(config)
-	}
+	config.Apply(options...)
 	return TranslateWithConfig(text, to, token, config)
 }
 
