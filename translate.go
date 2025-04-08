@@ -37,13 +37,12 @@ func TranslateWithConfig(text, To, token string, cfg *TranslationConfig) (string
 	return resp.Choices[0].Message.Content, nil
 }
 
-func generateChat(text, To string, params *TranslationConfig) []openai.ChatCompletionMessage {
+func generateChat(text, to string, params *TranslationConfig) []openai.ChatCompletionMessage {
 	var assistantPrompt string
-	To = getBaseLangCode(To)
-	if name := getLangName(params.From); name == "" || name == "auto" {
-		assistantPrompt = fmt.Sprintf("Please translate the following text to %s", getLangName(To))
+	if name := LookupLanguage(params.From); name == "" || name == "auto" {
+		assistantPrompt = fmt.Sprintf("Please translate the following text to %s:", LookupLanguage(to))
 	} else {
-		assistantPrompt = fmt.Sprintf("Please translate the following text from %s to %s", name, getLangName(To))
+		assistantPrompt = fmt.Sprintf("Please translate the following text from %s to %s:", name, LookupLanguage(to))
 	}
 	chat := []openai.ChatCompletionMessage{
 		{Role: "system", Content: params.SystemPrompt},
