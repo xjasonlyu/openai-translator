@@ -34,7 +34,7 @@ const defaultSystemPrompt = `You are a professional translator. You must follow 
 3. Only output the content of the translation
 4. Translate the input text precisely and faithfully without adding or omitting any content`
 
-func (cfg *TranslationConfig) init() {
+func (cfg *TranslationConfig) correct() {
 	if cfg.Ctx == nil {
 		cfg.Ctx = context.Background()
 	}
