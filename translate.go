@@ -2,7 +2,6 @@ package openaitranslator
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/sashabaranov/go-openai"
 )
@@ -17,7 +16,7 @@ func Translate(text, to, token string, opts ...Option) (string, error) {
 
 func TranslateWithConfig(text, To, token string, cfg *TranslationConfig) (string, error) {
 	openaiConf := openai.DefaultConfig(token)
-	cfg.correct()
+	cfg.init()
 	if cfg.Url != "" {
 		openaiConf.BaseURL = cfg.Url
 	}
@@ -48,9 +47,6 @@ func generateChat(text, to string, params *TranslationConfig) []openai.ChatCompl
 		{Role: "system", Content: params.SystemPrompt},
 		{Role: "user", Content: assistantPrompt},
 		{Role: "user", Content: text},
-	}
-	if params.Debug {
-		log.Println(chat)
 	}
 	return chat
 }

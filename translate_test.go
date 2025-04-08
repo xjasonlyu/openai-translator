@@ -21,7 +21,7 @@ func TestTranslate(t *testing.T) {
 			unit.text, unit.to,
 			os.Getenv("OPENAI_API_KEY"),
 			WithFrom(unit.from),
-			WithUrl(os.Getenv("OPENAI_API_URL")),
+			WithBaseURL(os.Getenv("OPENAI_API_URL")),
 			WithModel(os.Getenv("OPENAI_MODEL")),
 		)
 		if assert.NoError(t, err) {
@@ -29,17 +29,3 @@ func TestTranslate(t *testing.T) {
 		}
 	}
 }
-
-var (
-	_ = WithUrl
-	_ = WithCtx
-	_ = WithDebug
-	_ = WithModel
-	_ = WithFrom
-	_ = WithFrequencyPenalty
-	_ = WithMaxTokens
-	_ = WithSystemPrompt
-	_ = WithTemperature
-	_ = WithPresencePenalty
-	_ = WithTopP
-)
