@@ -8,44 +8,30 @@ import (
 )
 
 func TestTranslate(t *testing.T) {
+	var (
+		apiKey = os.Getenv("OPENAI_API_KEY")
+		apiURL = os.Getenv("OPENAI_API_URL")
+	)
+	if apiKey == "" {
+		t.SkipNow()
+	}
+
 	for _, unit := range []struct {
 		text, from, to string
 	}{
 		{`Oh yeah! I'm a translator!`, "", "zh"},
 		{`Oh yeah! I'm a translator!`, "", "wyw"},
 		{`Oh yeah! I'm a translator!`, "", "ja"},
-		{`Oh yeah! I'm a translator!`, "", "de"},
-		{`Oh yeah! I'm a translator!`, "", "fr"},
+		{`Oh yeah! I'm a translator!`, "auto", "de"},
+		{`Oh yeah! I'm a translator!`, "en", "fr"},
 	} {
 		result, err := Translate(
-			unit.text, unit.to,
-			os.Getenv("OPENAI_API_KEY"),
-			WithFrom(unit.from),
-			WithUrl(os.Getenv("OPENAI_API_URL")),
-			WithModel(os.Getenv("OPENAI_MODEL")),
+			unit.text, unit.to, apiKey,
+			WithBaseURL(apiURL),
+			WithSourceLanguage(unit.from),
 		)
 		if assert.NoError(t, err) {
 			t.Log(result)
 		}
 	}
 }
-
-func TestRegisterLanguage(t *testing.T) {
-	t.Log(GetLangMap())
-	RegisterLanguage("zh-CN", "简体中文")
-	t.Log(GetLangMap())
-}
-
-var (
-	_ = WithUrl
-	_ = WithCtx
-	_ = WithDebug
-	_ = WithModel
-	_ = WithFrom
-	_ = WithFrequencyPenalty
-	_ = WithMaxTokens
-	_ = WithSystemPrompt
-	_ = WithTemperature
-	_ = WithPresencePenalty
-	_ = WithTopP
-)

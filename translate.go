@@ -1,8 +1,8 @@
 package openaitranslator
 
 import (
+	"errors"
 	"fmt"
-	"log"
 
 	"github.com/sashabaranov/go-openai"
 )
@@ -17,41 +17,50 @@ func Translate(text, to, token string, opts ...Option) (string, error) {
 
 func TranslateWithConfig(text, To, token string, cfg *TranslationConfig) (string, error) {
 	openaiConf := openai.DefaultConfig(token)
-	cfg.correct()
-	if cfg.Url != "" {
-		openaiConf.BaseURL = cfg.Url
+	cfg.init()
+	if cfg.BaseURL != "" {
+		openaiConf.BaseURL = cfg.BaseURL
 	}
-	resp, err := openai.NewClientWithConfig(openaiConf).CreateChatCompletion(cfg.Ctx, openai.ChatCompletionRequest{
-		Model:            cfg.Model,
-		MaxTokens:        cfg.MaxTokens,
-		Temperature:      cfg.Temperature,
-		TopP:             cfg.TopP,
-		PresencePenalty:  cfg.PresencePenalty,
-		FrequencyPenalty: cfg.FrequencyPenalty,
-
-		Messages: generateChat(text, To, cfg),
-	})
+	client := openai.NewClientWithConfig(openaiConf)
+	resp, err := client.CreateChatCompletion(
+		cfg.Ctx,
+		openai.ChatCompletionRequest{
+			Model:               cfg.Model,
+			MaxTokens:           cfg.MaxTokens,
+			MaxCompletionTokens: cfg.MaxTokens,
+			Temperature:         cfg.Temperature,
+			TopP:                cfg.TopP,
+			PresencePenalty:     cfg.PresencePenalty,
+			FrequencyPenalty:    cfg.FrequencyPenalty,
+			// translation chat messages
+			Messages: generateChatMessages(text, To, cfg),
+		})
 	if err != nil {
 		return "", err
+	}
+	if len(resp.Choices) == 0 {
+		return "", errors.New("empty response choices")
 	}
 	return resp.Choices[0].Message.Content, nil
 }
 
-func generateChat(text, To string, params *TranslationConfig) []openai.ChatCompletionMessage {
-	var assistantPrompt string
-	To = getBaseLangCode(To)
-	if name := getLangName(params.From); name == "" || name == "auto" {
-		assistantPrompt = fmt.Sprintf("Please translate the following text to %s", getLangName(To))
+const (
+	chatMessageRoleSystem = "system"
+	chatMessageRoleUser   = "user"
+)
+
+func generateChatMessages(text, to string, params *TranslationConfig) []openai.ChatCompletionMessage {
+	assistantPrompt := "Please translate the following text"
+	if src := LookupLanguage(params.SourceLanguage); src == "" || src == "auto" {
+		assistantPrompt += fmt.Sprintf(" into %s:", LookupLanguage(to))
 	} else {
-		assistantPrompt = fmt.Sprintf("Please translate the following text from %s to %s", name, getLangName(To))
+		assistantPrompt += fmt.Sprintf(" from %s to %s:", src, LookupLanguage(to))
 	}
-	chat := []openai.ChatCompletionMessage{
-		{Role: "system", Content: params.SystemPrompt},
-		{Role: "user", Content: assistantPrompt},
-		{Role: "user", Content: text},
+
+	messages := []openai.ChatCompletionMessage{
+		{Role: chatMessageRoleSystem, Content: params.SystemPrompt},
+		{Role: chatMessageRoleUser, Content: assistantPrompt},
+		{Role: chatMessageRoleUser, Content: text},
 	}
-	if params.Debug {
-		log.Println(chat)
-	}
-	return chat
+	return messages
 }
