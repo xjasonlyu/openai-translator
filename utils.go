@@ -1,7 +1,6 @@
 package openaitranslator
 
 import (
-	"net/url"
 	"sync"
 
 	"golang.org/x/text/language"
@@ -139,18 +138,5 @@ func getBaseLangCode(langCode string) string {
 		return t.String()
 	} else {
 		return getBaseLangCode(parent)
-	}
-}
-
-func parseOpenaiAPIURLv1(u string) (string, error) {
-	if u == "" {
-		return openaiAPIURLv1, nil
-	} else {
-		up, err := url.Parse(u)
-		if err != nil {
-			return "", err
-		}
-		up.Path = "/v1"
-		return up.String(), nil
 	}
 }
