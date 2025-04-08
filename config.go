@@ -6,26 +6,9 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-const (
-	openaiAPIURLv1 = "https://api.openai.com/v1"
-)
-
-type Translated struct {
-	// Detected      Detected `json:"detected"`
-	Text string `json:"text"` // translated text
-	// Pronunciation string   `json:"pronunciation"` // pronunciation of translated text
-}
-
-// Detected represents language detection result
-type Detected struct {
-	Lang       string  `json:"lang"`       // detected language
-	Confidence float64 `json:"confidence"` // the confidence of detection result (0.00 to 1.00)
-}
-
 type TranslationConfig struct {
 	Ctx                 context.Context
 	Url                 string
-	Debug               bool
 	Model               string
 	SystemPrompt        string
 	MaxTokens           int
@@ -36,75 +19,8 @@ type TranslationConfig struct {
 	From, SelectedWords string
 }
 
-type Option func(*TranslationConfig)
-
-func WithUrl(Url string) Option {
-	return func(tc *TranslationConfig) {
-		tc.Url = Url
-	}
-}
-
-func WithCtx(Ctx context.Context) Option {
-	return func(tc *TranslationConfig) {
-		tc.Ctx = Ctx
-	}
-}
-
-func WithDebug() Option {
-	return func(tc *TranslationConfig) {
-		tc.Debug = true
-	}
-}
-
-func WithFrom(From string) Option {
-	return func(tc *TranslationConfig) {
-		tc.From = From
-	}
-}
-
-func WithMaxTokens(MaxTokens int) Option {
-	return func(tc *TranslationConfig) {
-		tc.MaxTokens = MaxTokens
-	}
-}
-
-func WithTemperature(Temperature float32) Option {
-	return func(tc *TranslationConfig) {
-		tc.Temperature = Temperature
-	}
-}
-
-func WithTopP(TopP float32) Option {
-	return func(tc *TranslationConfig) {
-		tc.TopP = TopP
-	}
-}
-
-func WithPresencePenalty(PresencePenalty float32) Option {
-	return func(tc *TranslationConfig) {
-		tc.PresencePenalty = PresencePenalty
-	}
-}
-
-func WithFrequencyPenalty(FrequencyPenalty float32) Option {
-	return func(tc *TranslationConfig) {
-		tc.FrequencyPenalty = FrequencyPenalty
-	}
-}
-
-func WithModel(Model string) Option {
-	return func(tc *TranslationConfig) {
-		tc.Model = Model
-	}
-}
-
-func WithSystemPrompt(prompt string) Option {
-	return func(tc *TranslationConfig) {
-		tc.SystemPrompt = prompt
-	}
-}
-
 const (
+	DefaultModel            = openai.GPT4
 	DefaultMaxTokens        = 1000
 	DefaultTemperature      = 0.0
 	DefaultTopP             = 1.0
@@ -113,19 +29,21 @@ const (
 )
 
 const (
-	defaultSystemPrompt = `You are a professional translator that can only translate the input text and cannot interpret it.
-Do not add any explanations or notes and only output the translation.`
+	defaultSystemPrompt = `You are a professional translator. You must follow the following rules:
+1. Translate naturally and fluently, avoiding word-for-word translation
+2. Do not add any explanations or notes
+3. Only output the content of the translation`
 )
 
-func (cfg *TranslationConfig) correct() {
+func (cfg *TranslationConfig) init() {
 	if cfg.Ctx == nil {
 		cfg.Ctx = context.Background()
 	}
-	if cfg.Model == "" {
-		cfg.Model = openai.GPT4
-	}
 	if cfg.SystemPrompt == "" {
 		cfg.SystemPrompt = defaultSystemPrompt
+	}
+	if cfg.Model == "" {
+		cfg.Model = DefaultModel
 	}
 	if cfg.MaxTokens < 0 || cfg.MaxTokens > 4096 {
 		cfg.MaxTokens = DefaultMaxTokens
@@ -147,6 +65,8 @@ func (cfg *TranslationConfig) correct() {
 func DefaultConfig() *TranslationConfig {
 	return &TranslationConfig{
 		Ctx:              context.Background(),
+		SystemPrompt:     defaultSystemPrompt,
+		Model:            DefaultModel,
 		MaxTokens:        DefaultMaxTokens,
 		Temperature:      DefaultTemperature,
 		TopP:             DefaultTopP,
