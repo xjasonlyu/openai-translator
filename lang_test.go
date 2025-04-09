@@ -30,7 +30,7 @@ func TestLookupLanguage(t *testing.T) {
 		// registered languages
 		{"wyw", "中文（古文-文言文）"},
 		{"chs", "Simplified Chinese"},
-		{"cht", "Traditional Chinese"},
+		{"CHT", "Traditional Chinese"},
 	}
 	for _, tt := range tests {
 		assert.Equal(t, LookupLanguage(tt.code), tt.lang)
