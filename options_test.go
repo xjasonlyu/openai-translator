@@ -9,8 +9,6 @@ import (
 
 func TestTranslateOptions(t *testing.T) {
 	ctx := context.Background()
-
-	options := DefaultOptions()
 	opts := []TranslateOption{
 		WithContext(ctx),
 		WithModel("model1"),
@@ -23,7 +21,9 @@ func TestTranslateOptions(t *testing.T) {
 		WithPresencePenalty(0.6),
 		WithFrequencyPenalty(0.4),
 	}
+	options := DefaultOptions()
 	options.Gather(opts...)
+	options.correct()
 
 	assert.Equal(t, "model1", options.Model)
 	assert.Equal(t, "lang1", options.SourceLanguage)
@@ -35,4 +35,19 @@ func TestTranslateOptions(t *testing.T) {
 	assert.Equal(t, float32(0.6), options.PresencePenalty)
 	assert.Equal(t, float32(0.4), options.FrequencyPenalty)
 	assert.Equal(t, ctx, options.Ctx)
+}
+
+func TestDefaultTranslateOptions(t *testing.T) {
+	opts := []TranslateOption{
+		WithModel(""),
+		WithSourceLanguage(""),
+		WithSystemPrompt(""),
+	}
+	options := DefaultOptions()
+	options.Gather(opts...)
+	options.correct()
+
+	assert.Equal(t, DefaultModel, options.Model)
+	assert.Equal(t, "", options.SourceLanguage)
+	assert.Equal(t, defaultSystemPrompt, options.SystemPrompt)
 }
