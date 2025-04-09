@@ -17,11 +17,13 @@ func TestTranslateText(t *testing.T) {
 		t.SkipNow()
 	}
 
-	translator := NewTranslator(
-		apiKey,
-		WithBaseURL(apiURL),
+	opts := []TranslatorOption{
 		WithHTTPClient(http.DefaultClient),
-	)
+	}
+	if apiURL != "" {
+		opts = append(opts, WithBaseURL(apiURL))
+	}
+	translator := NewTranslator(apiKey, opts...)
 
 	for _, unit := range []struct {
 		text, from, to string
