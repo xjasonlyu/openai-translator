@@ -17,18 +17,29 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 
-	translator "github.com/xjasonlyu/openai-translator"
+	openai "github.com/xjasonlyu/openai-translator"
 )
 
 func main() {
-	q := "Text to translate"
-	text, _ := translator.Translate(
-		q, "fr", "<API Key>",
-		translator.WithBaseURL("<Custom API Endpoint>"),
+	apiKey := os.Getenv("OPENAI_API_KEY")
+	apiURL := os.Getenv("OPENAI_API_URL")
+
+	translator := openai.NewTranslator(
+		apiKey,
+		openai.WithBaseURL(apiURL),
 	)
-	fmt.Println(text)
+
+	text, err := translator.TranslateText("Hello, world!", "ZH")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(text) // "你好，世界！"
 }
+
 ```
 
 ## Credits

@@ -1,4 +1,4 @@
-package openaitranslator
+package openai_translator
 
 import (
 	"sync"
