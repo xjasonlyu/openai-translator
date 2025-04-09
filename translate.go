@@ -25,7 +25,7 @@ func TranslateWithConfig(text, to, token string, config *TranslationConfig) (str
 		openai.ChatCompletionRequest{
 			Model:               config.Model,
 			MaxTokens:           config.MaxTokens,
-			MaxCompletionTokens: config.MaxTokens,
+			MaxCompletionTokens: config.MaxCompletionTokens,
 			Temperature:         config.Temperature,
 			TopP:                config.TopP,
 			PresencePenalty:     config.PresencePenalty,

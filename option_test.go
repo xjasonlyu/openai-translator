@@ -7,6 +7,7 @@ var (
 	_ = WithSourceLanguage
 	_ = WithFrequencyPenalty
 	_ = WithMaxTokens
+	_ = WithMaxCompletionTokens
 	_ = WithSystemPrompt
 	_ = WithTemperature
 	_ = WithPresencePenalty
