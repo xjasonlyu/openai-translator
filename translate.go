@@ -7,7 +7,7 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-func (t *Translator) TranslateText(text, to string, opts ...TranslateOption) (string, error) {
+func (t *Translator) TranslateText(text, targetLang string, opts ...TranslateOption) (string, error) {
 	options := DefaultOptions()
 	options.Gather(opts...)
 	options.correct()
@@ -23,7 +23,7 @@ func (t *Translator) TranslateText(text, to string, opts ...TranslateOption) (st
 			PresencePenalty:     options.PresencePenalty,
 			FrequencyPenalty:    options.FrequencyPenalty,
 			// translation messages
-			Messages: generateChatMessages(text, to, options),
+			Messages: generateChatMessages(text, targetLang, options),
 		})
 	if err != nil {
 		return "", err
@@ -39,12 +39,12 @@ const (
 	chatMessageRoleUser   = "user"
 )
 
-func generateChatMessages(text, to string, options *TranslateOptions) []openai.ChatCompletionMessage {
+func generateChatMessages(text, targetLang string, options *TranslateOptions) []openai.ChatCompletionMessage {
 	assistantPrompt := "Please translate the following text"
-	if src := LookupLanguage(options.SourceLanguage); src == "" || src == "auto" {
-		assistantPrompt += fmt.Sprintf(" into %s:", LookupLanguage(to))
+	if sourceLang := LookupLanguage(options.SourceLanguage); sourceLang == "" || sourceLang == "auto" {
+		assistantPrompt += fmt.Sprintf(" into %s:", LookupLanguage(targetLang))
 	} else {
-		assistantPrompt += fmt.Sprintf(" from %s to %s:", src, LookupLanguage(to))
+		assistantPrompt += fmt.Sprintf(" from %s to %s:", sourceLang, LookupLanguage(targetLang))
 	}
 
 	messages := []openai.ChatCompletionMessage{

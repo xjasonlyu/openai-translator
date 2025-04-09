@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTranslate(t *testing.T) {
+func TestTranslateText(t *testing.T) {
 	var (
 		apiKey = os.Getenv("OPENAI_API_KEY")
 		apiURL = os.Getenv("OPENAI_API_URL")
