@@ -1,6 +1,14 @@
 # OpenAI Translator
 
-This repo was originally forked from: <https://github.com/zijiren233/openai-translator>.
+A Golang translation library compatible with the [OpenAI API](https://platform.openai.com/docs/overview).
+
+## Installation
+
+Using the Go command, from inside your project:
+
+```shell
+go get -u github.com/xjasonlyu/openai-translator
+```
 
 ## Usage
 
@@ -22,3 +30,11 @@ func main() {
 	fmt.Println(text)
 }
 ```
+
+## Credits
+
+- [zijiren233/openai-translator](https://github.com/zijiren233/openai-translator)
+
+## License
+
+This project is open-sourced under the MIT license. See the [LICENSE](LICENSE) file for more details.
