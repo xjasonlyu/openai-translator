@@ -7,16 +7,20 @@ import (
 )
 
 type TranslationConfig struct {
-	Ctx              context.Context
-	BaseURL          string
-	Model            string
-	SystemPrompt     string
-	SourceLanguage   string
-	MaxTokens        int
-	Temperature      float32
-	TopP             float32
-	PresencePenalty  float32
-	FrequencyPenalty float32
+	Ctx            context.Context
+	BaseURL        string
+	Model          string
+	SystemPrompt   string
+	SourceLanguage string
+	// Deprecated: This value is now deprecated in favor of max_completion_tokens,
+	// and is not compatible with o1 series models.
+	// refs: https://platform.openai.com/docs/api-reference/chat/create#chat-create-max_tokens
+	MaxTokens           int
+	MaxCompletionTokens int
+	Temperature         float32
+	TopP                float32
+	PresencePenalty     float32
+	FrequencyPenalty    float32
 }
 
 func (config *TranslationConfig) Apply(options ...Option) {
@@ -26,12 +30,12 @@ func (config *TranslationConfig) Apply(options ...Option) {
 }
 
 const (
-	DefaultModel            = openai.GPT4
-	DefaultMaxTokens        = 1000
-	DefaultTemperature      = 0.1
-	DefaultTopP             = 1.0
-	DefaultPresencePenalty  = 0.0
-	DefaultFrequencyPenalty = 0.0
+	DefaultModel               = openai.GPT4
+	DefaultMaxCompletionTokens = 1000
+	DefaultTemperature         = 0.1
+	DefaultTopP                = 1.0
+	DefaultPresencePenalty     = 0.0
+	DefaultFrequencyPenalty    = 0.0
 )
 
 const defaultSystemPrompt = `You are a professional translator. You must follow the following rules:
@@ -50,8 +54,8 @@ func (config *TranslationConfig) correct() {
 	if config.Model == "" {
 		config.Model = DefaultModel
 	}
-	if config.MaxTokens < 0 || config.MaxTokens > 4096 {
-		config.MaxTokens = DefaultMaxTokens
+	if config.MaxCompletionTokens < 0 || config.MaxCompletionTokens > 4096 {
+		config.MaxCompletionTokens = DefaultMaxCompletionTokens
 	}
 	if config.TopP < 0 || config.TopP > 1 {
 		config.TopP = DefaultTopP
@@ -69,13 +73,13 @@ func (config *TranslationConfig) correct() {
 
 func DefaultConfig() *TranslationConfig {
 	return &TranslationConfig{
-		Ctx:              context.Background(),
-		SystemPrompt:     defaultSystemPrompt,
-		Model:            DefaultModel,
-		MaxTokens:        DefaultMaxTokens,
-		Temperature:      DefaultTemperature,
-		TopP:             DefaultTopP,
-		PresencePenalty:  DefaultPresencePenalty,
-		FrequencyPenalty: DefaultFrequencyPenalty,
+		Ctx:                 context.Background(),
+		SystemPrompt:        defaultSystemPrompt,
+		Model:               DefaultModel,
+		MaxCompletionTokens: DefaultMaxCompletionTokens,
+		Temperature:         DefaultTemperature,
+		TopP:                DefaultTopP,
+		PresencePenalty:     DefaultPresencePenalty,
+		FrequencyPenalty:    DefaultFrequencyPenalty,
 	}
 }

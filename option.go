@@ -36,9 +36,16 @@ func WithSourceLanguage(source string) Option {
 	}
 }
 
+// Deprecated: use WithMaxCompletionTokens instead.
 func WithMaxTokens(tokens int) Option {
 	return func(config *TranslationConfig) {
 		config.MaxTokens = tokens
+	}
+}
+
+func WithMaxCompletionTokens(tokens int) Option {
+	return func(config *TranslationConfig) {
+		config.MaxCompletionTokens = tokens
 	}
 }
 
