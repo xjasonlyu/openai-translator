@@ -8,34 +8,39 @@ import (
 
 type Translator struct {
 	client *openai.Client
-	//config *openai.ClientConfig
 }
 
 func NewTranslator(authToken string, opts ...TranslatorOption) *Translator {
 	config := openai.DefaultConfig(authToken)
-	for _, opt := range opts {
-		opt(&config)
-	}
+	(*TranslatorOptions)(&config).applyOptions(opts...)
 
 	return &Translator{
 		client: openai.NewClientWithConfig(config),
 	}
 }
 
-type TranslatorOption func(*openai.ClientConfig)
+type TranslatorOptions openai.ClientConfig
+
+type TranslatorOption func(*TranslatorOptions)
 
 func WithBaseURL(url string) TranslatorOption {
-	return func(c *openai.ClientConfig) {
+	return func(o *TranslatorOptions) {
 		if url != "" {
-			c.BaseURL = url
+			o.BaseURL = url
 		}
 	}
 }
 
 func WithHTTPClient(client *http.Client) TranslatorOption {
-	return func(c *openai.ClientConfig) {
+	return func(o *TranslatorOptions) {
 		if client != nil {
-			c.HTTPClient = client
+			o.HTTPClient = client
 		}
+	}
+}
+
+func (t *TranslatorOptions) applyOptions(opts ...TranslatorOption) {
+	for _, option := range opts {
+		option(t)
 	}
 }
