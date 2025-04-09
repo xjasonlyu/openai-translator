@@ -25,17 +25,13 @@ type TranslatorOption func(*TranslatorOptions)
 
 func WithBaseURL(url string) TranslatorOption {
 	return func(o *TranslatorOptions) {
-		if url != "" {
-			o.BaseURL = url
-		}
+		o.BaseURL = url
 	}
 }
 
 func WithHTTPClient(client *http.Client) TranslatorOption {
 	return func(o *TranslatorOptions) {
-		if client != nil {
-			o.HTTPClient = client
-		}
+		o.HTTPClient = client
 	}
 }
 
