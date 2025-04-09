@@ -1,6 +1,7 @@
 package openai_translator
 
 import (
+	"strings"
 	"sync"
 
 	"golang.org/x/text/language"
@@ -10,14 +11,14 @@ import (
 var _languages = sync.Map{}
 
 func RegisterLanguage(code, lang string) {
-	_languages.Store(code, lang)
+	_languages.Store(strings.ToLower(code), lang)
 }
 
 func LookupLanguage(code string) string {
 	if code == "" {
 		return ""
 	}
-	if lang, ok := _languages.Load(code); ok {
+	if lang, ok := _languages.Load(strings.ToLower(code)); ok {
 		return lang.(string)
 	}
 	tag, err := language.Parse(code)
